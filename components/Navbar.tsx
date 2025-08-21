@@ -4,6 +4,7 @@ import { ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
+import { ModeToggle } from "./ModeToggle";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -11,12 +12,12 @@ const Navbar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50  bd-white border-b border-border">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent hover:scale-105 transition-smooth"
+            className="text-2xl font-bold bg-gradient-primary bg-clip-text hover:scale-105 transition-smooth dark:text-amber-50 text-black"
           >
             ProductHub
           </Link>
@@ -41,6 +42,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
+            <ModeToggle />
             <Button variant="ghost" size="sm" asChild>
               <Link href="/products">
                 <ShoppingBag className="w-4 h-4 mr-2" />

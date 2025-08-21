@@ -12,49 +12,48 @@ const Navbar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50  bd-white border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50  bg-gray-300/40 backdrop-blur-md border-b border-white/20">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
+          {/* Logo - Fixed Gradient (Visible on Dark) */}
           <Link
             href="/"
-            className="text-2xl font-bold bg-gradient-primary bg-clip-text hover:scale-105 transition-smooth dark:text-amber-50 text-black"
+            className="text-2xl font-bold  bg-gray-900 
+                       bg-clip-text text-transparent"
           >
             ProductHub
           </Link>
 
+          {/* Desktop Navigation - Fixed Text Color */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className={`font-medium transition-smooth hover:text-primary ${
-                isActive("/") ? "text-primary" : "text-muted-foreground"
+              className={`font-medium text-black/80 hover:text-white transition-colors ${
+                isActive("/") && "text-teal-400 font-semibold"
               }`}
             >
               Home
             </Link>
             <Link
               href="/products"
-              className={`font-medium transition-smooth hover:text-primary ${
-                isActive("/products") ? "text-primary" : "text-muted-foreground"
+              className={`font-medium text-black/80 hover:text-white transition-colors ${
+                isActive("/products") && "text-teal-400 font-semibold"
               }`}
             >
               Products
             </Link>
           </div>
 
-          <div className="flex items-center space-x-4">
+          {/* Actions */}
+          <div className="flex items-center space-x-3">
             <ModeToggle />
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/products">
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                Browse
-              </Link>
-            </Button>
+
             <Button
               size="sm"
               asChild
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-white text-slate-900 hover:bg-gray-200 text-sm font-medium"
             >
-              <Link href="/login">
+              <Link href="/login" className="flex items-center">
                 <User className="w-4 h-4 mr-2" />
                 Login
               </Link>
@@ -62,6 +61,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Accent Line */}
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"></div>
     </nav>
   );
 };

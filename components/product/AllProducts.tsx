@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -23,67 +23,47 @@ import { Star, Search, Filter } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const AllProducts = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("name");
+type Product = {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  ims?: string;
+  rating?: number;
+};
 
-  // Mock products data
-  const products = [
-    {
-      id: 1,
-      name: "Premium Wireless Headphones",
-      description:
-        "Experience crystal-clear audio with our flagship wireless headphones featuring advanced noise cancellation technology.",
-      price: 299.99,
-      rating: 4.9,
-      category: "Electronics",
-    },
-    {
-      id: 2,
-      name: "Smart Fitness Tracker",
-      description:
-        "Track your health and fitness goals with advanced sensors and AI-powered insights for better wellness.",
-      price: 199.99,
-      rating: 4.8,
-      category: "Fitness",
-    },
-    {
-      id: 3,
-      name: "Ergonomic Desk Setup",
-      description:
-        "Transform your workspace with our complete ergonomic desk solution for enhanced productivity and comfort.",
-      price: 899.99,
-      rating: 4.7,
-      category: "Furniture",
-    },
-    {
-      id: 4,
-      name: "Professional Camera Kit",
-      description:
-        "Capture stunning photos and videos with this professional-grade camera kit including lenses and accessories.",
-      price: 1299.99,
-      rating: 4.9,
-      category: "Photography",
-    },
-    {
-      id: 5,
-      name: "Smart Home Hub",
-      description:
-        "Control your entire smart home ecosystem with this advanced hub featuring voice control and app integration.",
-      price: 149.99,
-      rating: 4.6,
-      category: "Smart Home",
-    },
-    {
-      id: 6,
-      name: "Wireless Gaming Mouse",
-      description:
-        "Precision gaming mouse with customizable RGB lighting and ultra-responsive sensors for competitive gaming.",
-      price: 79.99,
-      rating: 4.8,
-      category: "Gaming",
-    },
-  ];
+const AllProducts: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("name");
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/products");
+        if (!res.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data: Product[] = await res.json();
+        setProducts(data);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Unknown error");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   const filteredProducts = products
     .filter(
@@ -98,11 +78,27 @@ const AllProducts = () => {
         case "price-high":
           return b.price - a.price;
         case "rating":
-          return b.rating - a.rating;
+          return (b.rating ?? 0) - (a.rating ?? 0);
         default:
           return a.name.localeCompare(b.name);
       }
     });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-muted-foreground">Loading products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -153,14 +149,16 @@ const AllProducts = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
                 <Card
-                  key={product.id}
+                  key={product._id}
                   className="group hover:shadow-card transition-smooth"
                 >
                   <CardHeader>
                     <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
                       <Image
-                        src=""
+                        src={product.ims || "/placeholder.png"}
                         alt={product.name}
+                        width={400}
+                        height={225}
                         className="w-full h-full object-cover group-hover:scale-105 transition-smooth"
                       />
                     </div>
@@ -175,9 +173,7 @@ const AllProducts = () => {
                       </div>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">
-                          {product.rating}
-                        </span>
+                        <span className="text-sm font-medium">4</span>
                       </div>
                     </div>
                   </CardHeader>
@@ -191,7 +187,9 @@ const AllProducts = () => {
                   </CardContent>
                   <CardFooter>
                     <Button size="sm" asChild className="w-full">
-                      <Link href={`/products/${product.id}`}>View Details</Link>
+                      <Link href={`/products/${product._id}`}>
+                        View Details
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>

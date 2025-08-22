@@ -7,7 +7,12 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "./ModeToggle";
 import { useState } from "react";
 
-const Navbar = () => {
+// Define props interface
+interface NavbarProps {
+  sideMenu: boolean;
+}
+
+const Navbar = ({ sideMenu }: NavbarProps) => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -58,16 +63,18 @@ const Navbar = () => {
           <div className="flex items-center space-x-3">
             <ModeToggle />
 
-            <Button
-              size="sm"
-              asChild
-              className="bg-white text-slate-900 hover:bg-gray-200 text-sm font-medium hidden md:flex"
-            >
-              <Link href="/login" className="flex items-center">
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Link>
-            </Button>
+            {sideMenu && (
+              <Button
+                size="sm"
+                asChild
+                className="bg-white text-slate-900 hover:bg-gray-200 text-sm font-medium hidden md:flex"
+              >
+                <Link href="/login" className="flex items-center">
+                  <User className="w-4 h-4 mr-2" />
+                  Login
+                </Link>
+              </Button>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -106,16 +113,18 @@ const Navbar = () => {
                 Products
               </Link>
               <div className="pt-2">
-                <Button
-                  size="sm"
-                  asChild
-                  className="w-full bg-white text-slate-900 hover:bg-gray-200"
-                >
-                  <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                    <User className="w-4 h-4 mr-2" />
-                    Login
-                  </Link>
-                </Button>
+                {sideMenu && (
+                  <Button
+                    size="sm"
+                    asChild
+                    className="w-full bg-white text-slate-900 hover:bg-gray-200"
+                  >
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                      <User className="w-4 h-4 mr-2" />
+                      Login
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,39 +15,37 @@ import { Star, ArrowRight, Download, Shield, ZapIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
+// TypeScript interface for product
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  img: string;
+  createdAt: string;
+}
+
 const ProductHighlights = () => {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Premium Wireless Headphones",
-      description:
-        "Experience crystal-clear audio with our flagship wireless headphones featuring noise cancellation.",
-      price: 299.99,
-      rating: 4.9,
-      badge: "Bestseller",
-      features: ["Noise Cancellation", "30h Battery", "Premium Build"],
-    },
-    {
-      id: 2,
-      name: "Smart Fitness Tracker",
-      description:
-        "Track your health and fitness goals with advanced sensors and AI-powered insights.",
-      price: 199.99,
-      rating: 4.8,
-      badge: "New",
-      features: ["Heart Rate Monitor", "Sleep Tracking", "Waterproof"],
-    },
-    {
-      id: 3,
-      name: "Ergonomic Desk Setup",
-      description:
-        "Transform your workspace with our complete ergonomic desk solution for better productivity.",
-      price: 899.99,
-      rating: 4.7,
-      badge: "Premium",
-      features: ["Height Adjustable", "Cable Management", "Premium Materials"],
-    },
-  ];
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch featured products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products/featured");
+        const data = await res.json();
+        setFeaturedProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch featured products", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const features = [
     {
@@ -80,63 +81,71 @@ const ProductHighlights = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {featuredProducts.map((product) => (
-            <Card
-              key={product.id}
-              className="border border-border bg-card hover:shadow-xl transition-shadow duration-300"
-            >
-              <CardHeader className="pb-4 relative">
-                <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
-                  <Image
-                    src="https://images.pexels.com/photos/1666315/pexels-photo-1666315.jpeg" // leave empty, you said so
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-foreground">
-                    {product.name}
-                  </CardTitle>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                    <span className="text-sm font-medium">
-                      {product.rating}
-                    </span>
+          {loading ? (
+            <p className="col-span-3 text-center text-muted-foreground">
+              Loading products...
+            </p>
+          ) : featuredProducts.length === 0 ? (
+            <p className="col-span-3 text-center text-muted-foreground">
+              No featured products found.
+            </p>
+          ) : (
+            featuredProducts.map((product) => (
+              <Card
+                key={product._id}
+                className="border border-border bg-card hover:shadow-xl transition-shadow duration-300"
+              >
+                <CardHeader className="pb-4 relative">
+                  <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
+                    <Image
+                      src={product.img || "https://via.placeholder.com/600"}
+                      alt={product.name}
+                      width={600}
+                      height={600}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                  {product.description}
-                </CardDescription>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {product.features.map((feature, i) => (
-                    <Badge key={i} variant="outline" className="text-xs">
-                      {feature}
+
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg text-foreground">
+                      {product.name}
+                    </CardTitle>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                      <span className="text-sm font-medium">4.8</span>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    {product.description}
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    <Badge variant="outline" className="text-xs">
+                      Featured
                     </Badge>
-                  ))}
-                </div>
-                <div className="text-xl font-bold text-primary">
-                  ${product.price}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  size="lg"
-                  asChild
-                  className="w-full bg-gradient-to-br from-slate-700   to-gray-950 dark:text-white py-2"
-                >
-                  <Link
-                    href={`/products/${product.id}`}
-                    className="flex items-center justify-center gap-1.5"
+                  </div>
+                  <div className="text-xl font-bold text-primary">
+                    ${product.price.toFixed(2)}
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    size="lg"
+                    asChild
+                    className="w-full bg-gradient-to-br from-slate-700 to-gray-950 dark:text-white py-2"
                   >
-                    View Details <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                    <Link
+                      href={`/products/${product._id}`}
+                      className="flex items-center justify-center gap-1.5"
+                    >
+                      View Details <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Features */}
@@ -158,7 +167,7 @@ const ProductHighlights = () => {
             <Button size="lg" asChild>
               <Link
                 href="/products"
-                className="flex items-center gap-2 bg-gradient-to-br from-slate-700   to-gray-950 dark:text-white"
+                className="flex items-center gap-2 bg-gradient-to-br from-slate-700 to-gray-950 dark:text-white"
               >
                 View All Products <ArrowRight className="w-5 h-5" />
               </Link>

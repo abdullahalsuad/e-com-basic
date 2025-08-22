@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   Star,
   ArrowLeft,
@@ -20,148 +20,85 @@ import {
   Shield,
   RotateCcw,
 } from "lucide-react";
-
 import Image from "next/image";
 import Link from "next/link";
 
-interface ProductDetailProps {
-  params: {
-    id: string;
-  };
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  fullDescription?: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviewCount?: number;
+  category: string;
+  brand?: string;
+  inStock?: boolean;
+  features?: string[];
+  specifications?: Record<string, string>;
 }
 
-const ProductDetail = ({ params }: ProductDetailProps) => {
-  //   const { id } = useParams();
-  const { id } = params;
+interface ProductDetailProps {
+  productID: string;
+}
 
-  // Mock product data - in a real app, this would be fetched based on the ID
-  const products = {
-    1: {
-      id: 1,
-      name: "Premium Wireless Headphones",
-      description:
-        "Experience crystal-clear audio with our flagship wireless headphones featuring advanced noise cancellation technology, premium materials, and industry-leading battery life.",
-      fullDescription: `These premium wireless headphones represent the pinnacle of audio engineering, combining cutting-edge technology with exceptional comfort. Featuring active noise cancellation that adapts to your environment, these headphones deliver an immersive listening experience whether you're commuting, working, or relaxing.
+const ProductDetail = ({ productID }: ProductDetailProps) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-The headphones boast a 30-hour battery life with fast charging capabilities, ensuring your music never stops. Premium materials including soft-touch plastics and memory foam ear cushions provide all-day comfort, while the foldable design makes them perfect for travel.`,
-      price: 299.99,
-      originalPrice: 399.99,
-      rating: 4.9,
-      reviewCount: 1247,
-      category: "Electronics",
-      brand: "AudioTech",
-      inStock: true,
+  useEffect(() => {
+    async function fetchProduct() {
+      try {
+        setLoading(true);
+        setError(null);
 
-      features: [
-        "Advanced Active Noise Cancellation",
-        "30-hour battery life",
-        "Quick charge: 10 minutes = 3 hours",
-        "Premium memory foam cushions",
-        "Bluetooth 5.0 connectivity",
-        "Built-in microphone for calls",
-        "Foldable design for portability",
-        "Multiple device pairing",
-      ],
-      specifications: {
-        "Driver Size": "40mm",
-        "Frequency Response": "20Hz - 20kHz",
-        Impedance: "32 Ohm",
-        Sensitivity: "110dB",
-        Weight: "250g",
-        Connectivity: "Bluetooth 5.0, 3.5mm jack",
-        "Charging Port": "USB-C",
-      },
-    },
-    2: {
-      id: 2,
-      name: "Smart Fitness Tracker",
-      description:
-        "Track your health and fitness goals with advanced sensors and AI-powered insights for better wellness.",
-      fullDescription: `This advanced fitness tracker combines cutting-edge health monitoring with intelligent insights to help you achieve your wellness goals. With 24/7 heart rate monitoring, sleep tracking, and comprehensive activity detection, it's your personal health companion.
+        const res = await fetch(`/api/products/${productID}`);
 
-The tracker features a bright, always-on display and week-long battery life. Water-resistant design allows you to wear it anywhere, while smart notifications keep you connected without being overwhelming.`,
-      price: 199.99,
-      originalPrice: 249.99,
-      rating: 4.8,
-      reviewCount: 892,
-      category: "Fitness",
-      brand: "FitTech",
-      inStock: true,
+        if (!res.ok) {
+          throw new Error(`Failed to fetch product: ${res.status}`);
+        }
 
-      features: [
-        "24/7 Heart Rate Monitor",
-        "Advanced Sleep Tracking",
-        "7-day Battery Life",
-        "Water Resistant (50m)",
-        "Built-in GPS",
-        "Smart Notifications",
-        "Activity Auto-Detection",
-        "Health Insights & Tips",
-      ],
-      specifications: {
-        Display: "1.4 inch AMOLED",
-        "Battery Life": "7 days",
-        "Water Resistance": "5ATM",
-        Sensors: "Heart Rate, GPS, Accelerometer",
-        Connectivity: "Bluetooth 5.0",
-        Compatibility: "iOS & Android",
-        Weight: "45g",
-      },
-    },
-    3: {
-      id: 3,
-      name: "Ergonomic Desk Setup",
-      description:
-        "Transform your workspace with our complete ergonomic desk solution for enhanced productivity and comfort.",
-      fullDescription: `This complete ergonomic desk setup is designed to revolutionize your work experience. The height-adjustable desk seamlessly transitions between sitting and standing positions, promoting better posture and increased energy throughout the day.
+        const data: Product = await res.json();
+        setProduct(data);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
 
-Crafted from premium materials with integrated cable management, this desk combines functionality with style. The spacious surface accommodates multiple monitors while maintaining a clean, organized appearance that enhances any workspace.`,
-      price: 899.99,
-      originalPrice: 1099.99,
-      rating: 4.7,
-      reviewCount: 456,
-      category: "Furniture",
-      brand: "WorkSpace Pro",
-      inStock: true,
+    fetchProduct();
+  }, [productID]);
 
-      features: [
-        "Height Adjustable (28-48 inches)",
-        "Premium Oak Wood Surface",
-        "Integrated Cable Management",
-        "Memory Position Settings",
-        "Anti-Collision Technology",
-        "Quiet Motor Operation",
-        "Large Work Surface (60x30 inches)",
-        "Easy Assembly",
-      ],
-      specifications: {
-        Dimensions: '60" x 30" x 28-48"',
-        "Weight Capacity": "200 lbs",
-        Material: "Oak Wood Top, Steel Frame",
-        Motor: "Dual Motor System",
-        "Noise Level": "<50dB",
-        Speed: "1.5 inches/second",
-        Power: "110V-240V",
-      },
-    },
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
-  const product =
-    products[parseInt(id || "1") as keyof typeof products] || products[1];
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        {error}
+      </div>
+    );
+  }
 
-  const handleAddToCart = () => {
-    // toast({
-    //   title: "Added to Cart",
-    //   description: `${product.name} has been added to your cart.`,
-    // });
-  };
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Product not found.
+      </div>
+    );
+  }
 
-  const handleAddToWishlist = () => {
-    // toast({
-    //   title: "Added to Wishlist",
-    //   description: `${product.name} has been saved to your wishlist.`,
-    // });
-  };
+  // The rest of your UI code using `product` object (same as before)...
 
   return (
     <div className="min-h-screen bg-background">
@@ -196,25 +133,14 @@ Crafted from premium materials with integrated cable management, this desk combi
             <div>
               <div className="aspect-square bg-muted rounded-xl mb-4 overflow-hidden">
                 <Image
-                  src=""
+                  src="/placeholder-image.png" // Replace with real image url
                   alt={product.name}
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={500}
                 />
               </div>
-              <div className="grid grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="aspect-square bg-muted rounded-lg opacity-60 hover:opacity-100 transition-smooth cursor-pointer overflow-hidden"
-                  >
-                    <Image
-                      src=""
-                      alt={`${product.name} view ${i}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+              {/* Add thumbnail images if available */}
             </div>
 
             {/* Product Info */}
@@ -231,17 +157,14 @@ Crafted from premium materials with integrated cable management, this desk combi
                     <Star
                       key={star}
                       className={`w-5 h-5 ${
-                        star <= Math.floor(product.rating)
+                        star <= 4
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300"
                       }`}
                     />
                   ))}
                 </div>
-                <span className="font-medium">{product.rating}</span>
-                <span className="text-muted-foreground">
-                  ({product.reviewCount} reviews)
-                </span>
+                <span className="font-medium">4</span>
               </div>
 
               <div className="flex items-baseline space-x-4 mb-6">
@@ -256,14 +179,14 @@ Crafted from premium materials with integrated cable management, this desk combi
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Button size="lg" onClick={handleAddToCart}>
+                <Button size="lg" onClick={() => alert("Add to cart clicked")}>
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   Add to Cart
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={handleAddToWishlist}
+                  onClick={() => alert("Wishlist clicked")}
                 >
                   <Heart className="w-5 h-5" />
                 </Button>
@@ -303,15 +226,15 @@ Crafted from premium materials with integrated cable management, this desk combi
                 </div>
               </div>
 
-              {/* des */}
-              <div className="grid grid-cols-1   mb-8">
+              {/* Product Description */}
+              <div className="grid grid-cols-1 mb-8">
                 <Card>
                   <CardHeader>
                     <CardTitle>Product Description</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="text-base leading-relaxed whitespace-pre-line">
-                      {product.fullDescription}
+                      {product.fullDescription || product.description}
                     </CardDescription>
                   </CardContent>
                 </Card>

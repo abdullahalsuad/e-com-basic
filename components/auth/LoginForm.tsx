@@ -1,7 +1,7 @@
-import React from "react";
-import { Mail, Lock, EyeOff, Zap, Github } from "lucide-react";
+import { Mail, Lock, EyeOff } from "lucide-react";
+import SocialLogin from "./SocialLogin";
 
-const LoginPage = () => {
+const LoginForm = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
       {/* Navbar */}
@@ -10,12 +10,7 @@ const LoginPage = () => {
       <main className="pt-20 flex items-center justify-center min-h-[calc(100vh-80px)] p-6">
         <div className="w-full max-w-md">
           {/* Card */}
-          <div
-            className="backdrop-blur-sm bg-white dark:bg-gray-800 
-                        border border-gray-200 dark:border-gray-700 
-                        rounded-2xl shadow-lg dark:shadow-xl dark:shadow-black/20 
-                        overflow-hidden transition-colors duration-200"
-          >
+          <div className="backdrop-blur-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg dark:shadow-xl dark:shadow-black/20 overflow-hidden transition-colors duration-200">
             {/* Header */}
             <div className="text-center p-8 pb-6">
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -38,13 +33,7 @@ const LoginPage = () => {
                   <input
                     type="email"
                     placeholder="Enter your email"
-                    className="w-full pl-10 pr-4 py-2 
-                               bg-gray-50 dark:bg-gray-700 
-                               border border-gray-300 dark:border-gray-600 
-                               rounded-lg text-gray-900 dark:text-white 
-                               placeholder-gray-500 dark:placeholder-gray-400
-                               focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent
-                               transition-colors duration-200"
+                    className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-colors duration-200"
                   />
                 </div>
               </div>
@@ -125,31 +114,7 @@ const LoginPage = () => {
               </div>
 
               {/* Social Buttons */}
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  className="flex items-center justify-center gap-2 py-2.5 
-                                   border border-gray-300 dark:border-gray-600 
-                                   rounded-lg bg-white dark:bg-gray-700 
-                                   text-gray-800 dark:text-white text-sm font-medium 
-                                   hover:bg-gray-100 dark:hover:bg-gray-600 
-                                   transition-colors duration-200"
-                >
-                  <Zap className="w-4 h-4" />
-                  Google
-                </button>
-
-                <button
-                  className="flex items-center justify-center gap-2 py-2.5 
-                                   border border-gray-300 dark:border-gray-600 
-                                   rounded-lg bg-white dark:bg-gray-700 
-                                   text-gray-800 dark:text-white text-sm font-medium 
-                                   hover:bg-gray-100 dark:hover:bg-gray-600 
-                                   transition-colors duration-200"
-                >
-                  <Github className="w-4 h-4" />
-                  GitHub
-                </button>
-              </div>
+              <SocialLogin />
 
               {/* Sign Up Link */}
               <div className="text-center">
@@ -171,4 +136,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginForm;

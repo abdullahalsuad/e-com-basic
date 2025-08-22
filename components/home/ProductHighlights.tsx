@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, ArrowRight, Download, Shield, Zap, ZapIcon } from "lucide-react";
+import { Star, ArrowRight, Download, Shield, ZapIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const ProductHighlights = () => {
   const featuredProducts = [
@@ -86,7 +87,7 @@ const ProductHighlights = () => {
             >
               <CardHeader className="pb-4 relative">
                 <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
-                  <img
+                  <Image
                     src="https://images.pexels.com/photos/1666315/pexels-photo-1666315.jpeg" // leave empty, you said so
                     alt={product.name}
                     className="w-full h-full object-cover"

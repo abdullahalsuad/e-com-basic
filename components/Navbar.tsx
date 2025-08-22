@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, User, Menu, X } from "lucide-react";
+import { User, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
@@ -42,6 +42,15 @@ const Navbar = () => {
               }`}
             >
               Products
+            </Link>
+            <Link
+              href="/dashboard/add-product"
+              className={`font-medium text-black/80 dark:text-white/80 hover:text-teal-400 transition-colors ${
+                isActive("/dashboard/add-product") &&
+                "text-teal-400 font-semibold"
+              }`}
+            >
+              Add product
             </Link>
           </div>
 

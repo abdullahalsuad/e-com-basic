@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail, Lock, Eye, EyeOff, Zap, Github } from "lucide-react";
+import { Mail, Lock, EyeOff, Zap, Github } from "lucide-react";
 
 const LoginPage = () => {
   return (
@@ -154,7 +154,7 @@ const LoginPage = () => {
               {/* Sign Up Link */}
               <div className="text-center">
                 <span className="text-gray-600 dark:text-gray-400 text-sm">
-                  Don't have an account?{" "}
+                  Don not have an account?{" "}
                 </span>
                 <a
                   href="#"

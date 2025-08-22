@@ -179,7 +179,7 @@ const AllProducts: React.FC = () => {
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <CardDescription className="text-base mb-4">
-                      {product.description}
+                      {product.description.split(" ").slice(0, 20).join(" ")}...
                     </CardDescription>
                     <div className="text-2xl font-bold text-primary">
                       ${product.price}

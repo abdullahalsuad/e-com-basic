@@ -118,13 +118,9 @@ const ProductHighlights = () => {
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                    {product.description}
+                    {product.description.split(" ").slice(0, 30).join(" ")}..
                   </CardDescription>
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    <Badge variant="outline" className="text-xs">
-                      Featured
-                    </Badge>
-                  </div>
+
                   <div className="text-xl font-bold text-primary">
                     ${product.price.toFixed(2)}
                   </div>

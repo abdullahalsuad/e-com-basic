@@ -167,7 +167,7 @@ const ProductDetail = ({ productID }: ProductDetailProps) => {
               </div>
 
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                {product.description}
+                {product.description.split(" ").slice(0, 10).join(" ")}
               </p>
 
               {/* Action Buttons */}

@@ -18,8 +18,8 @@ const productSchema = new Schema({
     type: String,
     required: false,
   },
-  ims: {
-    type: [String], // URLs or image paths
+  img: {
+    type: String, // URLs or image paths
     required: false,
   },
 });

@@ -43,6 +43,7 @@ const AddProduct = () => {
       const description = formData.get("description") as string;
       const price = parseFloat(formData.get("price") as string);
 
+      // Client-side validation
       if (!name || !description || !price || !productCategory || !imageUrl) {
         setError("All fields are required.");
         setIsLoading(false);
@@ -72,6 +73,8 @@ const AddProduct = () => {
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
+      } else {
+        setError("An unknown error occurred.");
       }
     } finally {
       setIsLoading(false);
@@ -155,16 +158,19 @@ const AddProduct = () => {
 
                 {/* Single Image URL */}
                 <div className="space-y-2">
-                  <Label htmlFor="img">Image URL</Label>
+                  <Label htmlFor="img">Image URL (Single Image)</Label>
                   <Input
                     id="img"
                     name="img"
                     type="url"
-                    placeholder="https://your-image-link.com"
+                    placeholder="https://example.com/image.png"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     required
                   />
+                  <p className="text-sm text-muted-foreground">
+                    Enter a direct link to a single image (JPG, PNG, WebP, etc.)
+                  </p>
                 </div>
 
                 {/* Submit */}

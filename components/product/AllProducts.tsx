@@ -29,7 +29,7 @@ type Product = {
   description: string;
   price: number;
   category: string;
-  ims?: string;
+  img?: string;
   rating?: number;
 };
 
@@ -155,7 +155,7 @@ const AllProducts: React.FC = () => {
                   <CardHeader>
                     <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
                       <Image
-                        src={product.ims || "/placeholder.png"}
+                        src={product.img || "/placeholder.png"}
                         alt={product.name}
                         width={400}
                         height={225}

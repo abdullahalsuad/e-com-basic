@@ -1,13 +1,14 @@
 "use client";
 
-import { User, Menu, X } from "lucide-react";
+import { User, LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "./ModeToggle";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 
-// Define props interface
 interface NavbarProps {
   sideMenu: boolean;
 }
@@ -15,6 +16,7 @@ interface NavbarProps {
 const Navbar = ({ sideMenu }: NavbarProps) => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   const isActive = (path: string) => pathname === path;
 
@@ -63,17 +65,38 @@ const Navbar = ({ sideMenu }: NavbarProps) => {
           <div className="flex items-center space-x-3">
             <ModeToggle />
 
-            {sideMenu && (
-              <Button
-                size="sm"
-                asChild
-                className="bg-white text-slate-900 hover:bg-gray-200 text-sm font-medium hidden md:flex"
-              >
-                <Link href="/login" className="flex items-center">
-                  <User className="w-4 h-4 mr-2" />
-                  Login
-                </Link>
-              </Button>
+            {status === "authenticated" ? (
+              // Show profile image and logout when logged in
+              <div className="flex items-center space-x-3">
+                <Image
+                  src={session.user?.image || "https://via.placeholder.com/32"}
+                  alt="Profile"
+                  width={600}
+                  height={600}
+                  className="w-8 h-8 rounded-full border border-teal-400 cursor-pointer"
+                />
+
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="text-black/80 dark:text-white/80 hover:text-red-500"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              // Show login button if not authenticated and sideMenu is enabled
+              sideMenu && (
+                <Button
+                  size="sm"
+                  asChild
+                  className="bg-white text-slate-900 hover:bg-gray-200 text-sm font-medium hidden md:flex"
+                >
+                  <Link href="/login" className="flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    Login
+                  </Link>
+                </Button>
+              )
             )}
 
             {/* Mobile Menu Button */}
@@ -112,18 +135,41 @@ const Navbar = ({ sideMenu }: NavbarProps) => {
               >
                 Products
               </Link>
+              <Link
+                href="/dashboard/add-product"
+                className={`font-medium text-black/80 dark:text-white/80 ${
+                  isActive("/dashboard/add-product")
+                    ? "text-teal-400 font-semibold"
+                    : ""
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Add product
+              </Link>
               <div className="pt-2">
-                {sideMenu && (
+                {status === "authenticated" ? (
                   <Button
                     size="sm"
-                    asChild
-                    className="w-full bg-white text-slate-900 hover:bg-gray-200"
+                    variant="ghost"
+                    className="w-full justify-start text-red-500 hover:text-red-600"
+                    onClick={() => signOut({ callbackUrl: "/" })}
                   >
-                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                      <User className="w-4 h-4 mr-2" />
-                      Login
-                    </Link>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
                   </Button>
+                ) : (
+                  sideMenu && (
+                    <Button
+                      size="sm"
+                      asChild
+                      className="w-full bg-white text-slate-900 hover:bg-gray-200"
+                    >
+                      <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                        <User className="w-4 h-4 mr-2" />
+                        Login
+                      </Link>
+                    </Button>
+                  )
                 )}
               </div>
             </div>

@@ -27,16 +27,9 @@ interface Product {
   _id: string;
   name: string;
   description: string;
-  fullDescription?: string;
   price: number;
-  originalPrice?: number;
-  rating: number;
-  reviewCount?: number;
   category: string;
-  brand?: string;
-  inStock?: boolean;
-  features?: string[];
-  specifications?: Record<string, string>;
+  img: string;
 }
 
 interface ProductDetailProps {
@@ -133,7 +126,7 @@ const ProductDetail = ({ productID }: ProductDetailProps) => {
             <div>
               <div className="aspect-square bg-muted rounded-xl mb-4 overflow-hidden">
                 <Image
-                  src="/placeholder-image.png" // Replace with real image url
+                  src={product.img}
                   alt={product.name}
                   className="w-full h-full object-cover"
                   width={500}
@@ -234,7 +227,7 @@ const ProductDetail = ({ productID }: ProductDetailProps) => {
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="text-base leading-relaxed whitespace-pre-line">
-                      {product.fullDescription || product.description}
+                      {product.description}
                     </CardDescription>
                   </CardContent>
                 </Card>

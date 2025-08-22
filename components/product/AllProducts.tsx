@@ -150,7 +150,7 @@ const AllProducts: React.FC = () => {
               {filteredProducts.map((product) => (
                 <Card
                   key={product._id}
-                  className="group hover:shadow-card transition-smooth"
+                  className="group hover:shadow-card transition-smooth flex flex-col h-full"
                 >
                   <CardHeader>
                     <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
@@ -177,7 +177,7 @@ const AllProducts: React.FC = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <CardDescription className="text-base mb-4">
                       {product.description}
                     </CardDescription>
@@ -185,7 +185,7 @@ const AllProducts: React.FC = () => {
                       ${product.price}
                     </div>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="mt-auto">
                     <Button size="sm" asChild className="w-full">
                       <Link href={`/products/${product._id}`}>
                         View Details
